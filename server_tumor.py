@@ -2,10 +2,20 @@ import numpy as np
 from PIL import Image
 import tensorflow as tf
 from fastapi import FastAPI, File, UploadFile
+from fastapi.middleware.cors import CORSMiddleware  # Import CORSMiddleware
 import shutil
 import os
 
 app = FastAPI()
+
+# CORS configuration to allow requests from all sources
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allow all origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all HTTP methods (GET, POST, etc.)
+    allow_headers=["*"],  # Allow all headers
+)
 
 # Load the TensorFlow Lite model
 interpreter = tf.lite.Interpreter(model_path="model.tflite")
@@ -55,4 +65,3 @@ async def predict_brain_tumor_endpoint(file: UploadFile = File(...)):
     os.remove(file_path)  # Cleanup
 
     return {"diagnosis": prediction, "confidence": f"{confidence:.2f}%"}
-
