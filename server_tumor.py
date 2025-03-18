@@ -56,3 +56,6 @@ def predict_brain_tumor_tflite(image):
 async def predict_brain_tumor_endpoint(file: UploadFile = File(...)):
     prediction, confidence = predict_brain_tumor_tflite(file.file)
     return {"diagnosis": prediction, "confidence": f"{confidence:.2f}%"}
+@app.get("/")
+def health_check():
+    return {"status": "OK"}
